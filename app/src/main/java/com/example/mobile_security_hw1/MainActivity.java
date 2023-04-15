@@ -2,6 +2,7 @@ package com.example.mobile_security_hw1;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     // Declare the system services
     ConnectivityManager connectivityManager;
     WifiManager wifiManager;
+    BluetoothAdapter bluetoothAdapter;
     BatteryManager batteryManager;
     DisplayMetrics metrics;
 
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         // Initialize the system services
         connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         batteryManager = (BatteryManager) getSystemService(Context.BATTERY_SERVICE);
         metrics = getResources().getDisplayMetrics();
 
@@ -55,6 +58,10 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean isWiFiEnabled() {
         return wifiManager != null && wifiManager.isWifiEnabled();
+    }
+
+    private boolean isBluetoothEnabled() {
+        return bluetoothAdapter != null && bluetoothAdapter.isEnabled();
     }
 
     private int batteryLevel() {
@@ -88,6 +95,8 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "You Can't Access, Wi-Fi is not enabled", Toast.LENGTH_SHORT).show();
         } else if (!isNetworkConnected()) {
             Toast.makeText(this, "You Can't Access,Network is not connected", Toast.LENGTH_SHORT).show();
+        } else if (!isBluetoothEnabled()) {
+            Toast.makeText(this, "You Can't Access, Bluetooth is not enabled", Toast.LENGTH_SHORT).show();
         } else if (batteryLevel() < 100) {
             Toast.makeText(this, "You Can't Access,Battery Level under 100", Toast.LENGTH_SHORT).show();
         } else if (screenHeight() < 1000 || screenWidth() < 1000) {
@@ -103,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
         boolean isAuthenticated = authenticate(password);
 
         // Condition the login approval on the device parameters
-        if (isWiFiEnabled() && isNetworkConnected() && batteryLevel() == 100 && screenHeight() >= 1000 && screenWidth() >= 1000 && isAuthenticated) {
+        if (isWiFiEnabled() && isNetworkConnected() && isBluetoothEnabled() && batteryLevel() == 100 && screenHeight() >= 1000 && screenWidth() >= 1000 && isAuthenticated) {
             // Login is approved
             showHomeScreen();
         } else {
