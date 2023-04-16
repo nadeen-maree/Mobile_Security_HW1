@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String password = pass.getText().toString();
-                login(password);
+                checkLogin(password);
             }
         });
     }
@@ -76,11 +76,6 @@ public class MainActivity extends AppCompatActivity {
         return metrics.widthPixels;
     }
 
-    // authenticate a user's password
-    private boolean authenticate(String password) {
-        return password.equals("nadeen");
-    }
-
     //Navigate from the main activity to the home activity
     private void showHomeScreen() {
         Intent intent = new Intent(MainActivity.this, HomeActivity.class);
@@ -107,19 +102,81 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Define the login approval logic
-    public void login(String password) {
-        // Authenticate the user
-        boolean isAuthenticated = authenticate(password);
+    private void checkLogin(String password) {
+        if (password.equals(getString(R.string.battery_password))) {
+            if(batteryLevel() == 100) {
+                // Battery level condition is satisfied, continue to login
+                    showHomeScreen();
+            }else{
+                    Toast.makeText(this, "You Can't Access,Battery Level under 100", Toast.LENGTH_SHORT).show();
+                }
 
-        // Condition the login approval on the device parameters
-        if (isWiFiEnabled() && isNetworkConnected() && isBluetoothEnabled() && batteryLevel() == 100 && screenHeight() >= 1000 && screenWidth() >= 1000 && isAuthenticated) {
-            // Login is approved
-            showHomeScreen();
+        } else if (password.equals(getString(R.string.wifi_password))) {
+            if (isWiFiEnabled()){
+                // Wifi condition is satisfied, continue to login
+                    showHomeScreen();
+            }else {
+                Toast.makeText(this, "You Can't Access, Wi-Fi is not enabled", Toast.LENGTH_SHORT).show();
+            }
+
+        } else if (password.equals(getString(R.string.screen_size_password))) {
+            // Screen size condition is satisfied, continue to login
+            if(screenHeight() >= 1000 && screenWidth() >= 1000) {
+                    showHomeScreen();
+            }else{
+                Toast.makeText(this, "You Can't Access,Screen size under 1000 pixels", Toast.LENGTH_SHORT).show();
+            }
+
+        } else if (password.equals(getString(R.string.bluetooth_password))) {
+            if (isBluetoothEnabled()) {
+                // Bluetooth condition is satisfied, continue to login
+                    showHomeScreen();
+            }else{
+                Toast.makeText(this, "You Can't Access, Bluetooth is not enabled", Toast.LENGTH_SHORT).show();
+            }
+
+        } else if (password.equals(getString(R.string.network_password))) {
+            if(isNetworkConnected() && !isWiFiEnabled()) {
+                // Network condition is satisfied, continue to login
+                    showHomeScreen();
+            }else{
+                Toast.makeText(this, "You Can't Access,Network is not connected", Toast.LENGTH_SHORT).show();
+            }
+        } else if (password.equals(getString(R.string.all_conditions_password))) {
+            // Condition the login approval on the device parameters
+            if (isWiFiEnabled() && isNetworkConnected() && isBluetoothEnabled() && batteryLevel() == 100 && screenHeight() >= 1000 && screenWidth() >= 1000) {
+                // Login is approved
+                showHomeScreen();
+            } else {
+                // Login is rejected
+                showErrorMessage();
+            }
         } else {
-            // Login is rejected
-            showErrorMessage();
+            // Entered password is not valid
+            Toast.makeText(this, "Invalid password", Toast.LENGTH_SHORT).show();
         }
     }
+
+
+
+      // authenticate a user's password
+//    private boolean authenticate(String password) {
+//        return password.equals("all");
+//    }
+    //    public void login(String password) {
+//        // Authenticate the user
+//        boolean isAuthenticated = authenticate(password);
+//
+//        // Condition the login approval on the device parameters
+//        if (isWiFiEnabled() && isNetworkConnected() && isBluetoothEnabled() && batteryLevel() == 100 && screenHeight() >= 1000 && screenWidth() >= 1000 && isAuthenticated) {
+//            // Login is approved
+//            showHomeScreen();
+//        } else {
+//            // Login is rejected
+//            showErrorMessage();
+//        }
+//    }
+
 }
 
 
