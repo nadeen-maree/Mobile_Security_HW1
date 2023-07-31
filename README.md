@@ -40,18 +40,17 @@ Follow these steps to use the Android Login Application:
 
 You can customize the passwords for each condition in the `strings.xml` file located in the `app/src/main/res/values/strings.xml` directory. Modify the following variables to set the passwords:
 
-```java
-public class Constants {
-    // Passwords for each condition
-    public static final String PASSWORD_FULL_BATTERY = "full_battery_password";
-    public static final String PASSWORD_SCREEN_SIZE = "screen_size_password";
-    public static final String PASSWORD_NETWORK_CONNECTION = "network_connection_password";
-    public static final String PASSWORD_WIFI_ON = "wifi_on_password";
-    public static final String PASSWORD_BLUETOOTH_ON = "bluetooth_on_password";
+```xml
+<resources>
 
-    // Password to check all conditions together
-    public static final String PASSWORD_OVERALL = "overall_password";
-}
+    <string name="battery_password">battery</string>
+    <string name="wifi_password">wifi</string>
+    <string name="network_password">network</string>
+    <string name="bluetooth_password">bluetooth</string>
+    <string name="screen_size_password">screen</string>
+    <string name="all_conditions_password">all</string>
+
+</resources>
 ```
 
 ## Dependencies
